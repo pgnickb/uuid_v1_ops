@@ -1,0 +1,5 @@
+# uuid_v1_ops extension
+comment = 'uuid_v1_ops - adds support for UUID v1 specific btree operator'
+default_version = '1.0'
+relocatable = true
+module_pathname = 'ibdir/uuid_v1_ops'
