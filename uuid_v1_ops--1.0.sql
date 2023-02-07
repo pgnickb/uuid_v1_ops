@@ -17,7 +17,7 @@ create or replace function uuid_v1_internalize(uuid)
     language C immutable as 'uuid_v1_ops', 'uuid_v1_internalize';
 
 create or replace function uuid_v1_to_timestamptz(uuid)
-    returns int8
+    returns timestamptz
     language c stable as 'uuid_v1_ops', 'uuid_v1_to_timestamptz';
 /* src/sql/025_operators */
 
