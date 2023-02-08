@@ -10,5 +10,5 @@ create or replace function uuid_v1_internalize(uuid)
     language C immutable as 'uuid_v1_ops', 'uuid_v1_internalize';
 
 create or replace function uuid_v1_to_timestamptz(uuid)
-    returns timestamptz
+    returns int8
     language c stable as 'uuid_v1_ops', 'uuid_v1_to_timestamptz';
