@@ -1,0 +1,9 @@
+diff -U3 /home/nickb/devel/pg/uuid_v1_ops/expected/uuid_v1_ops.out /home/nickb/devel/pg/uuid_v1_ops/results/uuid_v1_ops.out
+--- /home/nickb/devel/pg/uuid_v1_ops/expected/uuid_v1_ops.out	2023-02-09 20:27:33.920484699 +0100
++++ /home/nickb/devel/pg/uuid_v1_ops/results/uuid_v1_ops.out	2023-02-09 20:27:42.693703997 +0100
+@@ -1,4 +1,5 @@
+ \unset ECHO
++
+ 1..6
+ ok 1 - Less then works fine
+ ok 2 - Greater then works fine

@@ -21,15 +21,17 @@ Datum
 uuid_v1_to_timestamptz(PG_FUNCTION_ARGS)
 {
     pg_uuid_t  *arg1 = PG_GETARG_UUID_P(0);
-    // uint64 res = 0;
+    uint64 res = 0;
     uint64 gns; /* number of 100ns intervals since EPOCH */
-    gns = ((uint64)((arg1 -> data[order[0]]) & 0x0F)) << 56;
+    gns = ((uint64) ((arg1->data[order[0]]) & 0x0F)) << 56;
     for (int i=1; i<UUID_V1_TIMESTAMP_LEN; ++i)
     {
+        /* this conversion is safe regardless of the endiannes */
         gns += ((uint64) arg1->data[order[i]]) << ((UUID_V1_TIMESTAMP_LEN-i-1) * 8);
     }
 
-    PG_RETURN_TIMESTAMPTZ(gns);
+    res = (gns/UUID_V1_100NS_TO_USEC)-GREGORIAN_BEGINNING_OFFSET_USEC;
+    PG_RETURN_TIMESTAMPTZ(res);
 }
 
 Datum
