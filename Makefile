@@ -1,5 +1,5 @@
 EXTENSION = uuid_v1_ops
-EXTVERSION = 1.0
+EXTVERSION = 0.1.0
 
 DATA = $(filter-out $(DATA_built), $(wildcard *--*.sql))
 PGFILEDESC = "$(EXTENSION) v$(EXTVERSION)"
@@ -15,8 +15,8 @@ MODULE_big = $(EXTENSION)
 
 define CONTROL_FILE_CONTENT
 # $(EXTENSION) extension
-comment = '$(EXTENSION) - adds support for UUID v1 specific btree operator'
-default_version = '1.0'
+comment = '$(EXTENSION) - adds support for UUID v1 specific btree operator class'
+default_version = '$(EXTVERSION)'
 relocatable = true
 module_pathname = '$libdir/$(EXTENSION)'
 endef
