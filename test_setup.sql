@@ -12,16 +12,14 @@
 \set ON_ERROR_ROLLBACK 1
 \set ON_ERROR_STOP true
 
-/* Load the pgTAP functions. */
-drop database if exists test_uuid_v1_ops;
-create database test_uuid_v1_ops;
-
-\c test_uuid_v1_ops
 /* We're in a new session now, so we should set session variables */
 set client_min_messages = 'error';
 /* this is necessary because that is what ajtime expects */
 set datestyle = 'iso';
 set log_statement = 'none';
+
+begin;
+
 /* initialize testing environment */
 
 /* helper function that might be useful for testing: */
@@ -56,6 +54,5 @@ $sql$
     select random() + 0 * (x is null)::int;
 $sql$;
 
+/* Load the pgTAP functions. */
 \i pgtap.sql
-
-set log_statement = 'all';

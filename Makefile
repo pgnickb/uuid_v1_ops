@@ -6,7 +6,6 @@ PGFILEDESC = "$(EXTENSION) v$(EXTVERSION)"
 
 TESTS        = $(wildcard sql/*.sql)
 REGRESS      = $(patsubst sql/%.sql,%,$(TESTS))
-# REGRESS_OPTS = --inputdir=test --load-language=plpgsql
 
 MODULE_big = $(EXTENSION)
 	OBJS = \
@@ -54,5 +53,5 @@ $(CONTROL_FILE_NAME):
 	@echo "$$CONTROL_FILE_CONTENT" > $@
 
 test:
-	pg_prove $(ARGS) -a ./tap_results/ $(TESTS)
+	pg_prove $(ARGS) -a ./tap_results/ $(TESTS) --dbname test_uuid_v1_ops
 

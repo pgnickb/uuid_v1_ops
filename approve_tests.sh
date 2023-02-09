@@ -8,6 +8,7 @@ for x in ./tap_results/sql/*.sql; do
     base=$(basename $x)
     t=./expected/"${base%.sql}.out"
     echo "\unset ECHO" > $t
+    echo >> $t
     cat "$x" >> $t
     echo "$t"
     cat "$t"

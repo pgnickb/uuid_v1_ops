@@ -3,7 +3,6 @@
 /* setup */
 \i test_setup.sql
 
-
 /* try and create extension */
 create extension uuid_v1_ops;
 

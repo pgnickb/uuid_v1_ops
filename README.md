@@ -23,13 +23,16 @@ As long as you have `pg_config` in your path, this should just work. Drop the `s
 
 # Tests
 
-For some odd reason regression checks aren't working, but that shouldn't be too big of a deal if you have `pg_prove` from the `pgTap` perl package, you can simply do:
+To run the standard regression test suite simply do:
 
+```
+make installcheck
+```
+
+If you have `pg_prove` available and like `pgTap` then you need to create a database named `test_uuid_v1_ops` and run:
 ```
 make test
 ```
-
-I plan to make regression tests work properly in the near future.
 
 # Benchmarks
 
