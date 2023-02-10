@@ -32,6 +32,8 @@ jobs:
       
       - name: Install PostgreSQL
         run: |
+          pwd
+          ls -la
           sudo apt-get -y \
                 -o Dpkg::Options::=--force-confdef \
                 -o Dpkg::Options::=--force-confnew \
