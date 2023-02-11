@@ -53,5 +53,5 @@ jobs:
       - name: Run pgindent
         working-directory: postgres/contrib/uuid_v1_ops/
         run: |
-          ../../sec/tools/pgindent
+          ../../src/tools/pgindent
           git diff
