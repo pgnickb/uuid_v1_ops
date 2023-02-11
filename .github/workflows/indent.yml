@@ -46,8 +46,9 @@ jobs:
           sudo make install
 
       - name: Clone our repo
-        working-directory: ./postgres/contrib/
         uses: actions/checkout@v3
+        with:
+          path: ./postgres/contrib/
 
       - name: Run pgindent
         working-directory: ./postgres/contrib/uuid_v1_ops/
