@@ -7,16 +7,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      PG: 15
 
     steps:
-      # - uses: shogo82148/actions-setup-perl@v1
-        # with:
-          # perl-version: '5.34'
-      # - run: cpanm --installdeps .
-      # - run: prove -lv t
-      
       - name: Initialize the env before installing Postgres
         run: |
           sudo apt-get -y --purge --no-upgrade remove postgresql libpq-dev libpq5 postgresql-client-common postgresql-common
@@ -27,7 +19,9 @@ jobs:
           sudo rm -rf /var/lib/postgresql
       
       - name: Fetch PostgreSQL sources
-        run: git clone https://github.com/postgres/postgres --branch REL_15_STABLE --single-branch && cd postgres
+        run: |
+          git clone https://github.com/postgres/postgres --branch REL_15_STABLE --single-branch 
+          cd postgres
 
       - name: Install pg-bsd-indent
         run: |
@@ -39,7 +33,8 @@ jobs:
 
       - name: Get headers
         run: |
-          sudo wget -O src/tools/pgindent/typedefs.list https://buildfarm.postgresql.org/cgi-bin/typedefs.pl
+          ls -l
+          wget -O src/tools/pgindent/typedefs.list https://buildfarm.postgresql.org/cgi-bin/typedefs.pl
 
       - name: Get PerlTidy
         run: |
