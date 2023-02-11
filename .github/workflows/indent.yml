@@ -26,17 +26,19 @@ jobs:
           sudo apt-get update -qq
           sudo rm -rf /var/lib/postgresql
       
-      - name: Install PostgreSQL & pgindent
+      - name: Fetch PostgreSQL sources
+        run: git clone git@github.com:postgres/postgres.git --branch REL_15_STABLE --single-branch && cd postgres
+
+      - name: Install pg-bsd-indent
         run: |
           sudo apt-get -y \
                 -o Dpkg::Options::=--force-confdef \
                 -o Dpkg::Options::=--force-confnew \
-                install postgresql-${PG:?} postgresql-server-dev-${PG:?} pg-bsd-indent
+                install pg-bsd-indent
 
 
       - name: Get headers
         run: |
-          cd /usr/local/src/postgresql
           sudo wget -O src/tools/pgindent/typedefs.list https://buildfarm.postgresql.org/cgi-bin/typedefs.pl
 
       - name: Get PerlTidy
@@ -47,5 +49,5 @@ jobs:
           perl Makefile.PL 
           make
           make test
-          make install
+          sudo make install
           cd ..
