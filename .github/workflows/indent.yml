@@ -19,6 +19,7 @@ jobs:
           sudo rm -rf /var/lib/postgresql
       
       - name: Fetch PostgreSQL sources
+        working-directory: ~/
         run: |
           git clone https://github.com/postgres/postgres --branch REL_15_STABLE --single-branch 
           cd postgres
@@ -32,11 +33,11 @@ jobs:
 
 
       - name: Get headers
-        run: |
-          ls -l
-          wget -O src/tools/pgindent/typedefs.list https://buildfarm.postgresql.org/cgi-bin/typedefs.pl
+        working-directory: ./postgres
+        run: wget -O src/tools/pgindent/typedefs.list https://buildfarm.postgresql.org/cgi-bin/typedefs.pl
 
       - name: Get PerlTidy
+        working-directory: ~/
         run: |
           wget https://cpan.metacpan.org/authors/id/S/SH/SHANCOCK/Perl-Tidy-20170521.tar.gz
           tar xvfz Perl-Tidy-20170521.tar.gz 
@@ -45,4 +46,3 @@ jobs:
           make
           make test
           sudo make install
-          cd ..
