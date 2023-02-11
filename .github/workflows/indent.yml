@@ -54,4 +54,9 @@ jobs:
         working-directory: postgres/contrib/uuid_v1_ops/
         run: |
           ../../src/tools/pgindent/pgindent
-          git diff
+          git diff > diff
+
+      - name: Show pgindent diffs
+        working-directory: postgres/contrib/uuid_v1_ops/
+        if: always()
+        run: cat diff || true
