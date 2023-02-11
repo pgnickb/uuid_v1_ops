@@ -44,3 +44,13 @@ jobs:
           make
           make test
           sudo make install
+
+      - name: Clone our repo
+        working-directory: ./postgres/contrib/
+        uses: actions/checkout@v3
+
+      - name: Run pgindent
+        working-directory: ./postgres/contrib/uuid_v1_ops/
+        run: |
+          ../../sec/tools/pgindent
+          git diff
