@@ -48,10 +48,10 @@ jobs:
       - name: Clone uuid_v1_ops repo
         uses: actions/checkout@v3
         with:
-          path: ./postgres/contrib/
+          path: postgres/contrib/
 
       - name: Run pgindent
-        working-directory: ./postgres/contrib/uuid_v1_ops/
+        working-directory: postgres/contrib/uuid_v1_ops/
         run: |
           ../../sec/tools/pgindent
           git diff
