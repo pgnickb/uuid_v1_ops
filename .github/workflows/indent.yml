@@ -45,7 +45,7 @@ jobs:
           make test
           sudo make install
 
-      - name: Clone our repo
+      - name: Clone uuid_v1_ops repo
         uses: actions/checkout@v3
         with:
           path: ./postgres/contrib/
