@@ -9,16 +9,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        postgresql-version: [11, 12, 13, 14, 15]
-
     env:
-      PG:       ${{ matrix.postgresql-version }}
+      PG: 15
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: '5.34'
+      - run: cpanm --installdeps .
+      - run: prove -lv t
       
       - name: Initialize the env before installing Postgres
         run: |
@@ -29,17 +28,26 @@ jobs:
           sudo apt-get update -qq
           sudo rm -rf /var/lib/postgresql
       
-      - name: Install PostgreSQL
+      - name: Install PostgreSQL & pgindent
         run: |
           sudo apt-get -y \
                 -o Dpkg::Options::=--force-confdef \
                 -o Dpkg::Options::=--force-confnew \
-                install postgresql-${PG:?} postgresql-server-dev-${PG:?}
-          sudo -u postgres createuser -s "$USER"
+                install postgresql-${PG:?} postgresql-server-dev-${PG:?} pg-bsd-indent
 
-      - name: Build and Test
-        run: make && sudo -E make install && time make installcheck
 
-      - name: Show regression diffs
-        if: always()
-        run: cat regression.diffs || true
+      - name: Get headers
+        run: |
+          cd /usr/local/src/postgresql
+          sudo wget -O src/tools/pgindent/typedefs.list https://buildfarm.postgresql.org/cgi-bin/typedefs.pl
+
+      - name: Get PerlTidy
+        run: |
+          wget https://cpan.metacpan.org/authors/id/S/SH/SHANCOCK/Perl-Tidy-20170521.tar.gz
+          tar xvfz Perl-Tidy-20170521.tar.gz 
+          cd Perl-Tidy-20170521
+          perl Makefile.PL 
+          make
+          make test
+          make install
+          cd ..
