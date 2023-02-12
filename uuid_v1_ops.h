@@ -6,12 +6,22 @@
 #include "utils/builtins.h"
 #include "utils/sortsupport.h"
 #include "utils/uuid.h"
+#include "utils/inet.h"
 #include "utils/timestamp.h"
 
 #define UUID_V1_100NS_TO_USEC 10L
 #define UUID_V1_TIMESTAMP_LEN 8
 #define GREGORIAN_BEGINNING_OFFSET_USEC 13165977600000000
 #define UUID_VERSION_OFFSET 6
+
+#define UUID_V1_MAC_OFFSET_A 10
+#define UUID_V1_MAC_OFFSET_B 11
+#define UUID_V1_MAC_OFFSET_C 12
+#define UUID_V1_MAC_OFFSET_D 13
+#define UUID_V1_MAC_OFFSET_E 14
+#define UUID_V1_MAC_OFFSET_F 15
+
+#define UUID_V1_SEQ_OFFSET 8
 
 PG_MODULE_MAGIC;
 
@@ -41,6 +51,15 @@ Datum		uuid_v1_ge(PG_FUNCTION_ARGS);
 
 PG_FUNCTION_INFO_V1(uuid_v1_gt);
 Datum		uuid_v1_gt(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(uuid_v1_get_mac);
+Datum       uuid_v1_get_mac(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(uuid_v1_get_clock_seq);
+Datum       uuid_v1_get_clock_seq(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(uuid_v1_get_variant);
+Datum       uuid_v1_get_variant(PG_FUNCTION_ARGS);
 
 static int	uuid_v1_internal_cmp(const pg_uuid_t *arg1, const pg_uuid_t *arg2);
 

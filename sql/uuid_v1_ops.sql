@@ -9,7 +9,7 @@ create extension uuid_v1_ops;
 /* seed random for consistent dataset */
 select setseed(0.2);
 
-select plan(15);
+select plan(28);
 /* tests: */
 
 /* comparison */
@@ -76,6 +76,26 @@ select is(uuid'00000000-0000-2000-0000-000000000000' ~<= null, null, '~<= handle
 select is(uuid'00000000-0000-2000-0000-000000000000' =   null, null,   '= handles null properly');
 select is(uuid'00000000-0000-2000-0000-000000000000' ~>= null, null, '~>= handles null properly');
 select is(uuid'00000000-0000-2000-0000-000000000000' ~>  null, null,  '~> handles null properly');
+
+/* get_mac tests */
+select is(uuid_v1_get_mac('00000000-0000-1000-b000-000000000000'), '00:00:00:00:00:00',  'All-zeroes mac address');
+select is(uuid_v1_get_mac('00000000-0000-1000-b000-ffffffffffff'), 'ff:ff:ff:ff:ff:ff',  'All-ones mac address');
+select is(uuid_v1_get_mac('00000000-0000-0000-0000-123456789abc'), '12:34:56:78:9a:bc',  'Some random mac address');
+select is(uuid_v1_get_mac(null), null,  'get_mac handles nulls properly');
+
+/* get_clock_seq tests */
+select is(uuid_v1_get_clock_seq('00000000-0000-1000-8000-000000000000'), 0::int2,  'All-zeroes clock-sequence');
+select is(uuid_v1_get_clock_seq('00000000-0000-1000-7fff-000000000000'), 16383::int2,  'All-ones clock-sequence');
+select is(uuid_v1_get_clock_seq('00000000-0000-1000-9357-000000000000'), 4951::int2,  'Some random clock-sequence');
+select is(uuid_v1_get_clock_seq(null), null,  'get_clock_seq handles nulls properly');
+
+/* get_variant tests */
+select is(uuid_v1_get_variant('00000000-0000-1000-0000-000000000000'), 0::int2,  'All-zeroes variant');
+select is(uuid_v1_get_variant('00000000-0000-1000-4000-000000000000'), 1::int2,  'Variant 1');
+select is(uuid_v1_get_variant('00000000-0000-1000-8000-000000000000'), 2::int2,  'Variant 2');
+select is(uuid_v1_get_variant('00000000-0000-1000-c000-000000000000'), 3::int2,  'Variant 3');
+select is(uuid_v1_get_variant(null), null,  'get_variant handles nulls properly');
+
 
 
 select * from finish();

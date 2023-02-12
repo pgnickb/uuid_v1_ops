@@ -3,7 +3,7 @@
 The extension is still under development. You are welcome to test it and submit feedback either via issues or via #postgresql on Libera.chat @nickb.
 # UUID v1 Opclass
 
-This extension provides the `uuid_v1_ops` opclass for indexes over UUID type. This enables a custom sorting order based on the timestamp encoded within the UUID.
+This extension provides the `uuid_v1_ops` opclass for indexes over UUID type. This enables a custom sorting order based on the timestamp encoded within the [UUID v1](https://datatracker.ietf.org/doc/html/draft-ietf-uuidrev-rfc4122bis-00#name-uuid-version-1).
 
 For an introduction refer to the [wiki page](https://github.com/pgnickb/uuid_v1_ops/wiki)
 

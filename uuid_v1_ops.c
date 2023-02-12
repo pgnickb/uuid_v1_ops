@@ -96,3 +96,44 @@ uuid_v1_gt(PG_FUNCTION_ARGS)
 
 	PG_RETURN_BOOL(uuid_v1_internal_cmp(arg1, arg2) > 0);
 }
+
+Datum
+uuid_v1_get_mac(PG_FUNCTION_ARGS)
+{
+	pg_uuid_t  *arg1 = PG_GETARG_UUID_P(0);
+	macaddr    *result;
+
+	result = (macaddr *) palloc(sizeof(macaddr));
+
+	result->a = arg1->data[UUID_V1_MAC_OFFSET_A];
+	result->b = arg1->data[UUID_V1_MAC_OFFSET_B];
+	result->c = arg1->data[UUID_V1_MAC_OFFSET_C];
+	result->d = arg1->data[UUID_V1_MAC_OFFSET_D];
+	result->e = arg1->data[UUID_V1_MAC_OFFSET_E];
+	result->f = arg1->data[UUID_V1_MAC_OFFSET_F];
+
+	PG_RETURN_MACADDR_P(result);
+}
+
+Datum
+uuid_v1_get_clock_seq(PG_FUNCTION_ARGS)
+{
+	pg_uuid_t  *arg1 = PG_GETARG_UUID_P(0);
+	int16		seq;
+
+	seq = ((int16) ((arg1->data[UUID_V1_SEQ_OFFSET]) & 0x3F)) << 8;
+	seq += arg1->data[UUID_V1_SEQ_OFFSET+1];
+
+	PG_RETURN_INT16(seq);
+}
+
+Datum
+uuid_v1_get_variant(PG_FUNCTION_ARGS)
+{
+	pg_uuid_t  *arg1 = PG_GETARG_UUID_P(0);
+	int16		v;
+
+	v = ((int16) ((arg1->data[UUID_V1_SEQ_OFFSET]) & 0xC0)) >> 6;
+
+	PG_RETURN_INT16(v);
+}

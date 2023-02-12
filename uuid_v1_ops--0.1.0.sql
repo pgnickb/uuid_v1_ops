@@ -50,6 +50,25 @@ create or replace function uuid_v1_gt(uuid,uuid)
     language C immutable
     parallel safe strict leakproof
     as 'uuid_v1_ops', 'uuid_v1_gt';
+
+create or replace function uuid_v1_get_mac(uuid)
+    returns macaddr
+    language C immutable
+    parallel safe strict leakproof
+    as 'uuid_v1_ops', 'uuid_v1_get_mac';
+
+create or replace function uuid_v1_get_clock_seq(uuid)
+    returns int2
+    language C immutable
+    parallel safe strict leakproof
+    as 'uuid_v1_ops', 'uuid_v1_get_clock_seq';
+
+create or replace function uuid_v1_get_variant(uuid)
+    returns int2
+    language C immutable
+    parallel safe strict leakproof
+    as 'uuid_v1_ops', 'uuid_v1_get_variant';
+
 /* src/sql/025_operators */
 
 create operator ~< (
