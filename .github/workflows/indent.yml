@@ -1,0 +1,61 @@
+name: indent
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Initialize the env before installing Postgres
+        run: |
+          sudo apt-get -y --purge --no-upgrade remove postgresql libpq-dev libpq5 postgresql-client-common postgresql-common
+          sudo apt install curl ca-certificates gnupg
+          curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg >/dev/null
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          sudo apt-get update -qq
+          sudo rm -rf /var/lib/postgresql
+
+      - name: Fetch PostgreSQL sources
+        run: |
+          git clone https://github.com/postgres/postgres --branch REL_15_STABLE --single-branch 
+          cd postgres
+
+      - name: Install pg-bsd-indent
+        run: |
+          sudo apt-get -y \
+                -o Dpkg::Options::=--force-confdef \
+                -o Dpkg::Options::=--force-confnew \
+                install pg-bsd-indent
+
+
+      - name: Get headers
+        working-directory: ./postgres
+        run: wget -O src/tools/pgindent/typedefs.list https://buildfarm.postgresql.org/cgi-bin/typedefs.pl
+
+      - name: Get PerlTidy
+        working-directory: 
+        run: |
+          wget https://cpan.metacpan.org/authors/id/S/SH/SHANCOCK/Perl-Tidy-20170521.tar.gz
+          tar xvfz Perl-Tidy-20170521.tar.gz 
+          cd Perl-Tidy-20170521
+          perl Makefile.PL 
+          make
+          make test
+          sudo make install
+
+      - name: Clone uuid_v1_ops repo
+        uses: actions/checkout@v3
+        with:
+          path: postgres/contrib/uuid_v1_ops
+
+      - name: Run pgindent
+        working-directory: postgres/contrib/uuid_v1_ops/
+        run: |
+          ../../src/tools/pgindent/pgindent
+
+      - name: Error out if diff isn't empty
+        working-directory: postgres/contrib/uuid_v1_ops/
+        if: always()
+        run: git diff --exit-code
