@@ -1,0 +1,45 @@
+name: tests
+on:
+  push:
+    branches:
+        - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        postgresql-version: [11, 12, 13, 14, 15]
+
+    env:
+      PG:       ${{ matrix.postgresql-version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Initialize the env before installing Postgres
+        run: |
+          sudo apt-get -y --purge --no-upgrade remove postgresql libpq-dev libpq5 postgresql-client-common postgresql-common
+          sudo apt install curl ca-certificates gnupg
+          curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg >/dev/null
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          sudo apt-get update -qq
+          sudo rm -rf /var/lib/postgresql
+      
+      - name: Install PostgreSQL
+        run: |
+          sudo apt-get -y \
+                -o Dpkg::Options::=--force-confdef \
+                -o Dpkg::Options::=--force-confnew \
+                install postgresql-${PG:?} postgresql-server-dev-${PG:?}
+          sudo -u postgres createuser -s "$USER"
+
+      - name: Build and Test
+        run: make && sudo -E make install && time make installcheck
+
+      - name: Show regression diffs
+        if: always()
+        run: cat regression.diffs || true
