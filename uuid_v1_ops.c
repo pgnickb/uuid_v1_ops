@@ -122,7 +122,7 @@ uuid_v1_get_clock_seq(PG_FUNCTION_ARGS)
 	int16		seq;
 
 	seq = ((int16) ((arg1->data[UUID_V1_SEQ_OFFSET]) & 0x3F)) << 8;
-	seq += arg1->data[UUID_V1_SEQ_OFFSET+1];
+	seq += arg1->data[UUID_V1_SEQ_OFFSET + 1];
 
 	PG_RETURN_INT16(seq);
 }

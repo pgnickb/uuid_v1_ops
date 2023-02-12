@@ -53,13 +53,13 @@ PG_FUNCTION_INFO_V1(uuid_v1_gt);
 Datum		uuid_v1_gt(PG_FUNCTION_ARGS);
 
 PG_FUNCTION_INFO_V1(uuid_v1_get_mac);
-Datum       uuid_v1_get_mac(PG_FUNCTION_ARGS);
+Datum		uuid_v1_get_mac(PG_FUNCTION_ARGS);
 
 PG_FUNCTION_INFO_V1(uuid_v1_get_clock_seq);
-Datum       uuid_v1_get_clock_seq(PG_FUNCTION_ARGS);
+Datum		uuid_v1_get_clock_seq(PG_FUNCTION_ARGS);
 
 PG_FUNCTION_INFO_V1(uuid_v1_get_variant);
-Datum       uuid_v1_get_variant(PG_FUNCTION_ARGS);
+Datum		uuid_v1_get_variant(PG_FUNCTION_ARGS);
 
 static int	uuid_v1_internal_cmp(const pg_uuid_t *arg1, const pg_uuid_t *arg2);
 
