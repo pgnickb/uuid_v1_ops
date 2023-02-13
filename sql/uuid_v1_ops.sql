@@ -77,11 +77,11 @@ select is(uuid'00000000-0000-2000-0000-000000000000' =   null, null,   '= handle
 select is(uuid'00000000-0000-2000-0000-000000000000' ~>= null, null, '~>= handles null properly');
 select is(uuid'00000000-0000-2000-0000-000000000000' ~>  null, null,  '~> handles null properly');
 
-/* get_mac tests */
-select is(uuid_v1_get_mac('00000000-0000-1000-b000-000000000000'), '00:00:00:00:00:00',  'All-zeroes mac address');
-select is(uuid_v1_get_mac('00000000-0000-1000-b000-ffffffffffff'), 'ff:ff:ff:ff:ff:ff',  'All-ones mac address');
-select is(uuid_v1_get_mac('00000000-0000-0000-0000-123456789abc'), '12:34:56:78:9a:bc',  'Some random mac address');
-select is(uuid_v1_get_mac(null), null,  'get_mac handles nulls properly');
+/* get_node_id tests */
+select is(uuid_v1_get_node_id('00000000-0000-1000-b000-000000000000'), '00:00:00:00:00:00',  'All-zeroes node id address');
+select is(uuid_v1_get_node_id('00000000-0000-1000-b000-ffffffffffff'), 'ff:ff:ff:ff:ff:ff',  'All-ones node id address');
+select is(uuid_v1_get_node_id('00000000-0000-0000-0000-123456789abc'), '12:34:56:78:9a:bc',  'Some random node id address');
+select is(uuid_v1_get_node_id(null), null,  'get_node_id handles nulls properly');
 
 /* get_clock_seq tests */
 select is(uuid_v1_get_clock_seq('00000000-0000-1000-8000-000000000000'), 0::int2,  'All-zeroes clock-sequence');

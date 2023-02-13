@@ -51,11 +51,11 @@ create or replace function uuid_v1_gt(uuid,uuid)
     parallel safe strict leakproof
     as 'uuid_v1_ops', 'uuid_v1_gt';
 
-create or replace function uuid_v1_get_mac(uuid)
+create or replace function uuid_v1_get_node_id(uuid)
     returns macaddr
     language C immutable
     parallel safe strict leakproof
-    as 'uuid_v1_ops', 'uuid_v1_get_mac';
+    as 'uuid_v1_ops', 'uuid_v1_get_node_id';
 
 create or replace function uuid_v1_get_clock_seq(uuid)
     returns int2
