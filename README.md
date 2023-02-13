@@ -3,7 +3,7 @@
 The extension is still under development. You are welcome to test it and submit feedback either via issues or via #postgresql on Libera.chat @nickb.
 # UUID v1 Opclass
 
-This extension provides the `uuid_v1_ops` opclass for indexes over UUID type. This enables a custom sorting order based on the timestamp encoded within the [UUID v1](https://datatracker.ietf.org/doc/html/draft-ietf-uuidrev-rfc4122bis-00#name-uuid-version-1).
+This extension provides the `uuid_v1_ops` opclass for indexes over UUID type. This enables a custom sorting order based on the timestamp encoded within the [UUID v1](https://www.ietf.org/rfc/rfc4122.txt).
 
 For an introduction refer to the [wiki page](https://github.com/pgnickb/uuid_v1_ops/wiki)
 
@@ -38,6 +38,8 @@ make test
 
 Below are results of a fairly primitive benchmark with a dataset of 40mil UUIDs. This is a "happy" path for our extension, but it's purpose is to demostrate the advantage of using a time UUID in its natural context.
 
+Default behavior:
+
 ```SQL
 create table u(u uuid);
 create index on u(u);
@@ -51,6 +53,9 @@ Time:                120115.153 ms (02:00.115)
 btree FPI %:         100.0
 total FPI %:          39.3 
 ```
+
+With `uuid_v1_ops`:
+
 ```SQL
 create table v1(u uuid);
 create index on v1(u uuid_v1_ops);
