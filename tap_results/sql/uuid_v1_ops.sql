@@ -14,10 +14,10 @@ ok 12 - ~<= handles null properly
 ok 13 - = handles null properly
 ok 14 - ~>= handles null properly
 ok 15 - ~> handles null properly
-ok 16 - All-zeroes mac address
-ok 17 - All-ones mac address
-ok 18 - Some random mac address
-ok 19 - get_mac handles nulls properly
+ok 16 - All-zeroes node id address
+ok 17 - All-ones node id address
+ok 18 - Some random node id address
+ok 19 - get_node_id handles nulls properly
 ok 20 - All-zeroes clock-sequence
 ok 21 - All-ones clock-sequence
 ok 22 - Some random clock-sequence

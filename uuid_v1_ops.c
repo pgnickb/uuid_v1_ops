@@ -98,19 +98,19 @@ uuid_v1_gt(PG_FUNCTION_ARGS)
 }
 
 Datum
-uuid_v1_get_mac(PG_FUNCTION_ARGS)
+uuid_v1_get_node_id(PG_FUNCTION_ARGS)
 {
 	pg_uuid_t  *arg1 = PG_GETARG_UUID_P(0);
 	macaddr    *result;
 
 	result = (macaddr *) palloc(sizeof(macaddr));
 
-	result->a = arg1->data[UUID_V1_MAC_OFFSET_A];
-	result->b = arg1->data[UUID_V1_MAC_OFFSET_B];
-	result->c = arg1->data[UUID_V1_MAC_OFFSET_C];
-	result->d = arg1->data[UUID_V1_MAC_OFFSET_D];
-	result->e = arg1->data[UUID_V1_MAC_OFFSET_E];
-	result->f = arg1->data[UUID_V1_MAC_OFFSET_F];
+	result->a = arg1->data[UUID_V1_NODE_OFFSET_A];
+	result->b = arg1->data[UUID_V1_NODE_OFFSET_B];
+	result->c = arg1->data[UUID_V1_NODE_OFFSET_C];
+	result->d = arg1->data[UUID_V1_NODE_OFFSET_D];
+	result->e = arg1->data[UUID_V1_NODE_OFFSET_E];
+	result->f = arg1->data[UUID_V1_NODE_OFFSET_F];
 
 	PG_RETURN_MACADDR_P(result);
 }

@@ -14,12 +14,12 @@
 #define GREGORIAN_BEGINNING_OFFSET_USEC 13165977600000000
 #define UUID_VERSION_OFFSET 6
 
-#define UUID_V1_MAC_OFFSET_A 10
-#define UUID_V1_MAC_OFFSET_B 11
-#define UUID_V1_MAC_OFFSET_C 12
-#define UUID_V1_MAC_OFFSET_D 13
-#define UUID_V1_MAC_OFFSET_E 14
-#define UUID_V1_MAC_OFFSET_F 15
+#define UUID_V1_NODE_OFFSET_A 10
+#define UUID_V1_NODE_OFFSET_B 11
+#define UUID_V1_NODE_OFFSET_C 12
+#define UUID_V1_NODE_OFFSET_D 13
+#define UUID_V1_NODE_OFFSET_E 14
+#define UUID_V1_NODE_OFFSET_F 15
 
 #define UUID_V1_SEQ_OFFSET 8
 
@@ -52,8 +52,8 @@ Datum		uuid_v1_ge(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(uuid_v1_gt);
 Datum		uuid_v1_gt(PG_FUNCTION_ARGS);
 
-PG_FUNCTION_INFO_V1(uuid_v1_get_mac);
-Datum		uuid_v1_get_mac(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(uuid_v1_get_node_id);
+Datum		uuid_v1_get_node_id(PG_FUNCTION_ARGS);
 
 PG_FUNCTION_INFO_V1(uuid_v1_get_clock_seq);
 Datum		uuid_v1_get_clock_seq(PG_FUNCTION_ARGS);
