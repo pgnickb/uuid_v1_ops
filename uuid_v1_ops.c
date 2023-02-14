@@ -152,7 +152,7 @@ uuid_v1_create_from(PG_FUNCTION_ARGS)
 	/*
 	 * Convert PostgreSQL epoch usec timestamptz to the UUID v1 Gregorian
 	 * epoch 0.1usec This can overflow, so we need to be careful
- 	 */
+	 */
 
 	if (((PG_INT64_MAX / UUID_V1_100NS_TO_USEC) - ts) < GREGORIAN_BEGINNING_OFFSET_USEC)
 	{
