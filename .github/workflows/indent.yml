@@ -22,8 +22,9 @@ jobs:
 
       - name: Fetch PostgreSQL sources
         run: |
-          git clone https://github.com/postgres/postgres --branch REL_15_STABLE --single-branch 
-          cd postgres
+          curl -L -o ./postgres.tar.gz https://api.github.com/repos/postgres/postgres/tarball/REL_15_STABLE
+          mkdir postgres
+          tar -xvf ./postgres.tar.gz -C postgres --strip-components 1
 
       - name: Install pg-bsd-indent
         run: |
@@ -34,7 +35,7 @@ jobs:
 
 
       - name: Get headers
-        working-directory: ./postgres
+        working-directory: postgres
         run: wget -O src/tools/pgindent/typedefs.list https://buildfarm.postgresql.org/cgi-bin/typedefs.pl
 
       - name: Get PerlTidy

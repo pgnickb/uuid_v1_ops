@@ -34,8 +34,8 @@ Datum		uuid_v1_cmp(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(uuid_v1_internalize);
 Datum		uuid_v1_internalize(PG_FUNCTION_ARGS);
 
-PG_FUNCTION_INFO_V1(uuid_v1_to_timestamptz);
-Datum		uuid_v1_to_timestamptz(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(uuid_v1_get_timestamptz);
+Datum		uuid_v1_get_timestamptz(PG_FUNCTION_ARGS);
 
 PG_FUNCTION_INFO_V1(uuid_v1_lt);
 Datum		uuid_v1_lt(PG_FUNCTION_ARGS);
@@ -60,6 +60,10 @@ Datum		uuid_v1_get_clock_seq(PG_FUNCTION_ARGS);
 
 PG_FUNCTION_INFO_V1(uuid_v1_get_variant);
 Datum		uuid_v1_get_variant(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(uuid_v1_create_from);
+Datum		uuid_v1_create_from(PG_FUNCTION_ARGS);
+
 
 static int	uuid_v1_internal_cmp(const pg_uuid_t *arg1, const pg_uuid_t *arg2);
 

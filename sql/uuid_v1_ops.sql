@@ -9,7 +9,7 @@ create extension uuid_v1_ops;
 /* seed random for consistent dataset */
 select setseed(0.2);
 
-select plan(28);
+select plan(30);
 /* tests: */
 
 /* comparison */
@@ -40,15 +40,15 @@ select is(
             true, 
             'Equals works fine');
 select is(
-            uuid_v1_to_timestamptz(uuid'00000000-0000-0000-0000-000000000000') at time zone 'UTC', 
+            uuid_v1_get_timestamptz(uuid'00000000-0000-0000-0000-000000000000') at time zone 'UTC', 
             timestamp'1582-10-15 00:00:00', 
             'Zero-uuid is the start of Gregorian calendar');
 select is(
-            uuid_v1_to_timestamptz(uuid'63b00000-bfde-11d3-0000-000000000000') at time zone 'UTC', 
+            uuid_v1_get_timestamptz(uuid'63b00000-bfde-11d3-0000-000000000000') at time zone 'UTC', 
             timestamp'2000-01-01 00:00:00', 
             'Timestamp of PostgreSQL Epoch');
 select is(
-            uuid_v1_to_timestamptz(uuid'bc2cd750-a63b-11ed-84a2-123456789112') at time zone 'UTC', 
+            uuid_v1_get_timestamptz(uuid'bc2cd750-a63b-11ed-84a2-123456789112') at time zone 'UTC', 
             timestamp'2023-02-06 16:31:40.869', 
             'Some random timestamp');
 
@@ -96,6 +96,39 @@ select is(uuid_v1_get_variant('00000000-0000-1000-8000-000000000000'), 2::int2, 
 select is(uuid_v1_get_variant('00000000-0000-1000-c000-000000000000'), 3::int2,  'Variant 3');
 select is(uuid_v1_get_variant(null), null,  'get_variant handles nulls properly');
 
+/* create_from tests */
+
+select is(
+        uuid_v1_create_from(now(), null, null),
+        null,
+        'create_from handles nulls properly');
+
+/* xxx in principle this is a strict test, as precision of 
+ * the PostgreSQL timestamptz type is lower that that of the
+ * UUID v1 (1usec vs 0.1usec respectively).
+ * Meaning if the UUID was created using this function,
+ * it is inevitably going to be consistently reversible.
+ */
+
+with gen as (
+    select
+            u,
+            uuid_v1_create_from(
+                        uuid_v1_get_timestamptz(u),
+                        uuid_v1_get_clock_seq(u),
+                        uuid_v1_get_node_id(u)) as g
+        from generate_series('2020-10-20 00:00:00 UTC',
+                             '2020-10-30 00:00:00 UTC',
+                             interval'20 minutes') as f(x),
+        uuid_v1_create_from(x,
+                            0::int2,
+                            macaddr'12:34:56:78:91:12') as g(u)
+), cnt as(
+    select count(*) as c
+        from gen
+        where u != g
+)
+select is(c, 0::int8, 'For some crude timestampts UUID generation is reversible') from cnt;
 
 
 select * from finish();

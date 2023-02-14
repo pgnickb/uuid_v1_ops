@@ -13,11 +13,11 @@ create or replace function uuid_v1_cmp(uuid, uuid)
     parallel safe strict leakproof
     as 'uuid_v1_ops', 'uuid_v1_cmp';
 
-create or replace function uuid_v1_to_timestamptz(uuid)
+create or replace function uuid_v1_get_timestamptz(uuid)
     returns timestamptz
     language C stable 
     parallel safe strict leakproof
-    as 'uuid_v1_ops', 'uuid_v1_to_timestamptz';
+    as 'uuid_v1_ops', 'uuid_v1_get_timestamptz';
 
 create or replace function is_uuid_v1(uuid)
     returns boolean
@@ -69,6 +69,11 @@ create or replace function uuid_v1_get_variant(uuid)
     parallel safe strict leakproof
     as 'uuid_v1_ops', 'uuid_v1_get_variant';
 
+create or replace function uuid_v1_create_from(timestamptz, int2, macaddr)
+    returns uuid
+    language C immutable
+    parallel safe strict leakproof
+    as 'uuid_v1_ops', 'uuid_v1_create_from';
 /* src/sql/025_operators */
 
 create operator ~< (
