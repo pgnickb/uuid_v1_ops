@@ -103,29 +103,29 @@ select is(
         null,
         'create_from handles nulls properly');
 
-/* xxx in principle this is not a strict test, as precision of 
- * the PostgreSQL timestamptz type doesn't match that of the
- * UUID v1 (1usec vs 0.1usec respectively), but if we keep the
- * timestampts rough enough, this should work. Below is a
- * very crude variant of such a test
+/* xxx in principle this is a strict test, as precision of 
+ * the PostgreSQL timestamptz type is lower that that of the
+ * UUID v1 (1usec vs 0.1usec respectively).
+ * Meaning if the UUID was created using this function,
+ * it is inevitably going to be consistently reversible.
  */
 
 with gen as (
-    select  
-            u, 
+    select
+            u,
             uuid_v1_create_from(
-                        uuid_v1_get_timestamptz(u), 
-                        uuid_v1_get_clock_seq(u), 
-                        uuid_v1_get_node_id(u)) as g 
-        from generate_series('2020-10-20 00:00:00 UTC', 
-                             '2020-10-30 00:00:00 UTC', 
-                             interval'20 minutes') as f(x), 
-        uuid_v1_create_from(x, 
+                        uuid_v1_get_timestamptz(u),
+                        uuid_v1_get_clock_seq(u),
+                        uuid_v1_get_node_id(u)) as g
+        from generate_series('2020-10-20 00:00:00 UTC',
+                             '2020-10-30 00:00:00 UTC',
+                             interval'20 minutes') as f(x),
+        uuid_v1_create_from(x,
                             0::int2,
                             macaddr'12:34:56:78:91:12') as g(u)
 ), cnt as(
     select count(*) as c
-        from gen 
+        from gen
         where u != g
 )
 select is(c, 0::int8, 'For some crude timestampts UUID generation is reversible') from cnt;
