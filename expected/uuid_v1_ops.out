@@ -1,6 +1,6 @@
 \unset ECHO
 
-1..28
+1..30
 ok 1 - uuid_v1_cmp handles nulls properly
 ok 2 - Less then works fine
 ok 3 - Greater then works fine
@@ -29,3 +29,5 @@ ok 25 - Variant 1
 ok 26 - Variant 2
 ok 27 - Variant 3
 ok 28 - get_variant handles nulls properly
+ok 29 - create_from handles nulls properly
+ok 30 - For some crude timestampts UUID generation is reversible
