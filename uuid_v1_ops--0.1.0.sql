@@ -15,7 +15,7 @@ create or replace function uuid_v1_cmp(uuid, uuid)
 
 create or replace function uuid_v1_get_timestamptz(uuid)
     returns timestamptz
-    language C stable 
+    language C immutable
     parallel safe strict leakproof
     as 'uuid_v1_ops', 'uuid_v1_get_timestamptz';
 
