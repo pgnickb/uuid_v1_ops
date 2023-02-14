@@ -153,7 +153,7 @@ uuid_v1_create_from(PG_FUNCTION_ARGS)
 	 * Convert PostgreSQL epoch usec timestamptz to the UUID v1 Gregorian
 	 * epoch 0.1usec This can overflow, so we need to be careful. UUID v1
 	 * Timestamp is unsigned and thus can't represent dates before it's epoch.
- 	 */
+	 */
 
 	if (ts > UUID_V1_GREATEST_SUPPORTED_TIMESTAMP ||
 		ts < UUID_V1_LEAST_SUPPORTED_TIMESTAMP)
