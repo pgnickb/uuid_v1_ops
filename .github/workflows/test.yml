@@ -23,7 +23,3 @@ jobs:
 
       - name: Build and Test
         run: pg-build-test
-
-      - name: Show regression diffs
-        if: always()
-        run: cat regression.diffs || true
