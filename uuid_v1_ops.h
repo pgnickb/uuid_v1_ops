@@ -71,7 +71,7 @@ PG_FUNCTION_INFO_V1(uuid_v1_create_from_ts);
 Datum		uuid_v1_create_from_ts(PG_FUNCTION_ARGS);
 
 PG_FUNCTION_INFO_V1(uuid_v1_create_from_int8);
-Datum       uuid_v1_create_from_int8(PG_FUNCTION_ARGS);
+Datum		uuid_v1_create_from_int8(PG_FUNCTION_ARGS);
 
 pg_uuid_t  *uuid_v1_create_from_internal(int64 ts, int16 clock_seq, macaddr *node);
 static int	uuid_v1_internal_cmp(const pg_uuid_t *arg1, const pg_uuid_t *arg2);
