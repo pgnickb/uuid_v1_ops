@@ -19,6 +19,12 @@ create or replace function uuid_v1_get_timestamptz(uuid)
     parallel safe strict leakproof
     as 'uuid_v1_ops', 'uuid_v1_get_timestamptz';
 
+create or replace function uuid_v1_get_timestamp_as_int8(uuid)
+    returns int8
+    language C immutable
+    parallel safe strict leakproof
+    as 'uuid_v1_ops', 'uuid_v1_get_timestamp_as_int8';
+
 create or replace function is_uuid_v1(uuid)
     returns boolean
     language c immutable
@@ -69,11 +75,18 @@ create or replace function uuid_v1_get_variant(uuid)
     parallel safe strict leakproof
     as 'uuid_v1_ops', 'uuid_v1_get_variant';
 
-create or replace function uuid_v1_create_from(timestamptz, int2, macaddr)
+create or replace function uuid_v1_create_from_ts(timestamptz, int2, macaddr)
     returns uuid
     language C immutable
     parallel safe strict leakproof
-    as 'uuid_v1_ops', 'uuid_v1_create_from';
+    as 'uuid_v1_ops', 'uuid_v1_create_from_ts';
+
+create or replace function uuid_v1_create_from_int8(int8, int2, macaddr)
+    returns uuid
+    language C immutable
+    parallel safe strict leakproof
+    as 'uuid_v1_ops', 'uuid_v1_create_from_int8';
+
 /* src/sql/025_operators */
 
 create operator ~< (
