@@ -10,20 +10,29 @@ is_uuid_v1(PG_FUNCTION_ARGS)
 		);
 }
 
+int64
+uuid_v1_get_timestamp_internal(pg_uuid_t *uuid)
+{
+	uint64		res;			/* number of 100ns intervals since EPOCH */
+
+	res = ((uint64) ((uuid->data[order[0]]) & 0x0F)) << 56;
+	for (int i = 1; i < UUID_V1_TIMESTAMP_LEN; ++i)
+	{
+		/* this conversion is safe regardless of the endiannes */
+		res += ((uint64) uuid->data[order[i]]) << ((UUID_V1_TIMESTAMP_LEN - i - 1) * 8);
+	}
+
+	return res;
+}
+
 Datum
 uuid_v1_get_timestamptz(PG_FUNCTION_ARGS)
 {
 	pg_uuid_t  *arg1 = PG_GETARG_UUID_P(0);
-	uint64		res = 0;
+	uint64		res;
 	uint64		gns;			/* number of 100ns intervals since EPOCH */
 
-	gns = ((uint64) ((arg1->data[order[0]]) & 0x0F)) << 56;
-	for (int i = 1; i < UUID_V1_TIMESTAMP_LEN; ++i)
-	{
-		/* this conversion is safe regardless of the endiannes */
-		gns += ((uint64) arg1->data[order[i]]) << ((UUID_V1_TIMESTAMP_LEN - i - 1) * 8);
-	}
-
+	gns = uuid_v1_get_timestamp_internal(arg1);
 	res = (gns / UUID_V1_100NS_TO_USEC) - GREGORIAN_BEGINNING_OFFSET_USEC;
 	PG_RETURN_TIMESTAMPTZ(res);
 }
@@ -32,16 +41,8 @@ Datum
 uuid_v1_get_timestamp_as_int8(PG_FUNCTION_ARGS)
 {
 	pg_uuid_t  *arg1 = PG_GETARG_UUID_P(0);
-	int64		gns;			/* number of 100ns intervals since EPOCH */
 
-	gns = ((uint64) ((arg1->data[order[0]]) & 0x0F)) << 56;
-	for (int i = 1; i < UUID_V1_TIMESTAMP_LEN; ++i)
-	{
-		/* this conversion is safe regardless of the endiannes */
-		gns += ((uint64) arg1->data[order[i]]) << ((UUID_V1_TIMESTAMP_LEN - i - 1) * 8);
-	}
-
-	PG_RETURN_INT64(gns);
+	PG_RETURN_INT64(uuid_v1_get_timestamp_internal(arg1));
 }
 
 
@@ -168,8 +169,8 @@ uuid_v1_create_from_ts(PG_FUNCTION_ARGS)
 	 * Timestamp is unsigned and thus can't represent dates before it's epoch.
 	 */
 
-	if (ts > UUID_V1_GREATEST_SUPPORTED_TIMESTAMP ||
-		ts < UUID_V1_LEAST_SUPPORTED_TIMESTAMP)
+	if (unlikely((ts > UUID_V1_GREATEST_SUPPORTED_TIMESTAMP ||
+		ts < UUID_V1_LEAST_SUPPORTED_TIMESTAMP)))
 	{
 		ereport(ERROR,
 				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),

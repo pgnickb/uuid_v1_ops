@@ -9,12 +9,12 @@
 #include "utils/inet.h"
 #include "utils/timestamp.h"
 
-#define UUID_V1_100NS_TO_USEC 10L
+#define UUID_V1_100NS_TO_USEC INT64CONST(10)
 #define UUID_V1_TIMESTAMP_LEN 8
-#define GREGORIAN_BEGINNING_OFFSET_USEC 13165977600000000LL
+#define GREGORIAN_BEGINNING_OFFSET_USEC INT64CONST(13165977600000000)
 #define UUID_VERSION_OFFSET 6
 
-#define UUID_V1_GREATEST_SUPPORTED_TIMESTAMP 909171226085477580LL
+#define UUID_V1_GREATEST_SUPPORTED_TIMESTAMP INT64CONST(909171226085477580)
 #define UUID_V1_LEAST_SUPPORTED_TIMESTAMP -GREGORIAN_BEGINNING_OFFSET_USEC
 
 #define UUID_V1_NODE_OFFSET_A 10
@@ -74,6 +74,7 @@ PG_FUNCTION_INFO_V1(uuid_v1_create_from_int8);
 Datum		uuid_v1_create_from_int8(PG_FUNCTION_ARGS);
 
 pg_uuid_t  *uuid_v1_create_from_internal(int64 ts, int16 clock_seq, macaddr *node);
+int64       uuid_v1_get_timestamp_internal(pg_uuid_t *uuid);
 static int	uuid_v1_internal_cmp(const pg_uuid_t *arg1, const pg_uuid_t *arg2);
 
 static unsigned int order[UUID_LEN] = {6, 7, 4, 5, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15};

@@ -9,7 +9,7 @@ create extension uuid_v1_ops;
 /* seed random for consistent dataset */
 select setseed(0.2);
 
-select plan(36);
+select plan(42);
 /* tests: */
 
 /* comparison */
@@ -167,5 +167,89 @@ select is(
         uuid_v1_create_from_int8(null, null, null),
         null,
         'create_from_int8 handles nulls properly');
+
+/* table data tests */
+
+create table uvone(seed int8, u uuid);
+
+insert into uvone
+    select 
+            x as seed,
+            uuid_v1_create_from_int8(
+                x,
+                (x % 32768)::int2,
+                format('11:22:33:44:55:%2s', btrim(to_char(x/6400, '00')))::macaddr
+            ) as uuid
+        from generate_series(1, 128000) as f(x);
+
+create index on uvone(u uuid_v1_ops);
+
+/* we're in a transaction block so we can't really vacuum analyze here, thus we hope 
+ * autovac will kick in v13+ PostgreSQL.
+ * We're also not sure whether PG will decide to use our index or not, nor do we 
+ * insist on it, but we need to be sure that it _can_ if/when necessary.
+ * Thus we leave it no choise.
+ */
+
+ set enable_seqscan = off;
+ set enable_bitmapscan = off;
+
+select is(
+    explain_plan_jsonb(
+        'select * from uvone ' ||
+        'where u ~< ''0000c350-0000-1000-8350-112233445507'' ' ||
+        'order by u using ~< limit 10'
+    )  -> 0 -> 'Plan' -> 'Plans' -> 0 -> 'Node Type',
+    '"Index Scan"',
+    'Planner recognizes uuid_v1_ops index as usable for the ~< operator');
+
+select is(
+    explain_plan_jsonb(
+        'select * from uvone ' ||
+        'where u ~> ''0000c350-0000-1000-8350-112233445507'' ' ||
+        'order by u using ~< limit 10'
+    )  -> 0 -> 'Plan' -> 'Plans' -> 0 -> 'Node Type',
+    '"Index Scan"',
+    'Planner recognizes uuid_v1_ops index as usable for the ~> operator');
+
+
+select is(
+    explain_plan_jsonb(
+        'select * from uvone ' ||
+        'where u ~<= ''0000c350-0000-1000-8350-112233445507'' ' ||
+        'order by u using ~< limit 10'
+    )  -> 0 -> 'Plan' -> 'Plans' -> 0 -> 'Node Type',
+    '"Index Scan"',
+    'Planner recognizes uuid_v1_ops index as usable for the ~<= operator');
+
+select is(
+    explain_plan_jsonb(
+        'select * from uvone ' ||
+        'where u ~>= ''0000c350-0000-1000-8350-112233445507'' ' ||
+        'order by u using ~< limit 10'
+    )  -> 0 -> 'Plan' -> 'Plans' -> 0 -> 'Node Type',
+    '"Index Scan"',
+    'Planner recognizes uuid_v1_ops index as usable for the ~>= operator');
+
+select is(
+    explain_plan_jsonb(
+        'select * from uvone ' ||
+        'where u = ''0000c350-0000-1000-8350-112233445507'''
+    )  -> 0 -> 'Plan' -> 'Node Type',
+    '"Index Scan"',
+    'Planner recognizes uuid_v1_ops index as usable for the = operator');
+
+with cnt as
+(
+    select count(*) as n
+        from uvone
+        where 
+                seed != uuid_v1_get_timestamp_as_int8(u)
+            and (seed % 32768)::int2 = uuid_v1_get_clock_seq(u)
+            and format('11:22:33:44:55:%2s', btrim(to_char(seed/6400, '00')))::macaddr = 
+                    uuid_v1_get_node_id(u)
+)
+select is(n, 0::int8, 'UUID v1 are correctly reversed into components')
+    from cnt;
 
 select * from finish();
