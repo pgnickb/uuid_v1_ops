@@ -10,23 +10,41 @@ is_uuid_v1(PG_FUNCTION_ARGS)
 		);
 }
 
+int64
+uuid_v1_get_timestamp_internal(pg_uuid_t *uuid)
+{
+	uint64		res;			/* number of 100ns intervals since EPOCH */
+
+	res = ((uint64) ((uuid->data[order[0]]) & 0x0F)) << 56;
+	for (int i = 1; i < UUID_V1_TIMESTAMP_LEN; ++i)
+	{
+		/* this conversion is safe regardless of the endiannes */
+		res += ((uint64) uuid->data[order[i]]) << ((UUID_V1_TIMESTAMP_LEN - i - 1) * 8);
+	}
+
+	return res;
+}
+
 Datum
 uuid_v1_get_timestamptz(PG_FUNCTION_ARGS)
 {
 	pg_uuid_t  *arg1 = PG_GETARG_UUID_P(0);
-	uint64		res = 0;
+	uint64		res;
 	uint64		gns;			/* number of 100ns intervals since EPOCH */
 
-	gns = ((uint64) ((arg1->data[order[0]]) & 0x0F)) << 56;
-	for (int i = 1; i < UUID_V1_TIMESTAMP_LEN; ++i)
-	{
-		/* this conversion is safe regardless of the endiannes */
-		gns += ((uint64) arg1->data[order[i]]) << ((UUID_V1_TIMESTAMP_LEN - i - 1) * 8);
-	}
-
+	gns = uuid_v1_get_timestamp_internal(arg1);
 	res = (gns / UUID_V1_100NS_TO_USEC) - GREGORIAN_BEGINNING_OFFSET_USEC;
 	PG_RETURN_TIMESTAMPTZ(res);
 }
+
+Datum
+uuid_v1_get_timestamp_as_int8(PG_FUNCTION_ARGS)
+{
+	pg_uuid_t  *arg1 = PG_GETARG_UUID_P(0);
+
+	PG_RETURN_INT64(uuid_v1_get_timestamp_internal(arg1));
+}
+
 
 Datum
 uuid_v1_cmp(PG_FUNCTION_ARGS)
@@ -138,16 +156,12 @@ uuid_v1_get_variant(PG_FUNCTION_ARGS)
 	PG_RETURN_INT16(v);
 }
 
-
 Datum
-uuid_v1_create_from(PG_FUNCTION_ARGS)
+uuid_v1_create_from_ts(PG_FUNCTION_ARGS)
 {
 	TimestampTz ts = PG_GETARG_TIMESTAMPTZ(0);
 	int16		clock_seq = PG_GETARG_INT16(1);
 	macaddr    *node = PG_GETARG_MACADDR_P(2);
-	pg_uuid_t  *res;
-
-	res = (pg_uuid_t *) palloc(sizeof(*res));
 
 	/*
 	 * Convert PostgreSQL epoch usec timestamptz to the UUID v1 Gregorian
@@ -155,8 +169,8 @@ uuid_v1_create_from(PG_FUNCTION_ARGS)
 	 * Timestamp is unsigned and thus can't represent dates before it's epoch.
 	 */
 
-	if (ts > UUID_V1_GREATEST_SUPPORTED_TIMESTAMP ||
-		ts < UUID_V1_LEAST_SUPPORTED_TIMESTAMP)
+	if (unlikely((ts > UUID_V1_GREATEST_SUPPORTED_TIMESTAMP ||
+				  ts < UUID_V1_LEAST_SUPPORTED_TIMESTAMP)))
 	{
 		ereport(ERROR,
 				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
@@ -165,7 +179,25 @@ uuid_v1_create_from(PG_FUNCTION_ARGS)
 
 	ts = (ts + GREGORIAN_BEGINNING_OFFSET_USEC) * UUID_V1_100NS_TO_USEC;
 
-	/* We try to keep further modifications endiannes-neutral */
+	PG_RETURN_UUID_P(uuid_v1_create_from_internal(ts, clock_seq, node));
+}
+
+Datum
+uuid_v1_create_from_int8(PG_FUNCTION_ARGS)
+{
+	int64		ts = PG_GETARG_INT64(0);
+	int16		clock_seq = PG_GETARG_INT16(1);
+	macaddr    *node = PG_GETARG_MACADDR_P(2);
+
+	PG_RETURN_UUID_P(uuid_v1_create_from_internal(ts, clock_seq, node));
+}
+
+pg_uuid_t *
+uuid_v1_create_from_internal(int64 ts, int16 clock_seq, macaddr *node)
+{
+	pg_uuid_t  *res;
+
+	res = (pg_uuid_t *) palloc(sizeof(*res));
 
 	/* timestamp low bytes */
 	res->data[0] = (uint8) ((ts & 0xff000000) >> 24);
@@ -198,5 +230,5 @@ uuid_v1_create_from(PG_FUNCTION_ARGS)
 	res->data[14] = node->e;
 	res->data[15] = node->f;
 
-	PG_RETURN_UUID_P(res);
+	return res;
 }

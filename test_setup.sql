@@ -22,7 +22,7 @@ begin;
 
 /* initialize testing environment */
 
-/* helper function that might be useful for testing: */
+/* helper functions that might be useful for testing: */
 
 /* hackrandom(anyelement) returns float8
  *
@@ -53,6 +53,27 @@ create or replace function public.hackrandom(x anyelement)
 $sql$
     select random() + 0 * (x is null)::int;
 $sql$;
+
+
+/* get_plan_jsonb(text) returns jsonb
+ * Get jsonb-plan of the supplied query.
+ * 
+ * No effort is put into making sure the query is valid or to protect 
+ * against SQLi. It is the caller's responsibility to sanitize the input.
+ */
+create or replace function public.explain_plan_jsonb(q text)
+    returns jsonb
+    language plpgsql volatile as
+$fnc$
+declare
+    _plan jsonb;
+begin
+    execute format('explain (costs off, format json) %s', q) into _plan;
+    return _plan;
+end;
+$fnc$;
+
+
 
 /* Load the pgTAP functions. */
 \i pgtap.sql
