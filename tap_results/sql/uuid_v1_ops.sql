@@ -39,5 +39,5 @@ ok 37 - Planner recognizes uuid_v1_ops index as usable for the ~< operator
 ok 38 - Planner recognizes uuid_v1_ops index as usable for the ~> operator
 ok 39 - Planner recognizes uuid_v1_ops index as usable for the ~<= operator
 ok 40 - Planner recognizes uuid_v1_ops index as usable for the ~>= operator
-ok 41 - Planner recognizes uuid_v1_ops index as usable for the ~>= operator
+ok 41 - Planner recognizes uuid_v1_ops index as usable for the = operator
 ok 42 - UUID v1 are correctly reversed into components

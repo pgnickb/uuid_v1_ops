@@ -170,7 +170,7 @@ uuid_v1_create_from_ts(PG_FUNCTION_ARGS)
 	 */
 
 	if (unlikely((ts > UUID_V1_GREATEST_SUPPORTED_TIMESTAMP ||
-		ts < UUID_V1_LEAST_SUPPORTED_TIMESTAMP)))
+				  ts < UUID_V1_LEAST_SUPPORTED_TIMESTAMP)))
 	{
 		ereport(ERROR,
 				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
