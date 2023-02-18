@@ -9,7 +9,7 @@ create extension uuid_v1_ops;
 /* seed random for consistent dataset */
 select setseed(0.2);
 
-select plan(42);
+select plan(43);
 /* tests: */
 
 /* comparison */
@@ -149,6 +149,17 @@ with gen as (
         where u != g
 )
 select is(c, 0::int8, 'Timestamptz UUID generation is consistent') from cnt;
+
+/* An overflow is detected correctly */
+select throws_ok(
+        $sql$ select uuid_v1_create_from_ts(
+            timestamptz'294276-12-31 23:59:59 UTC', /* Too big for UUID */
+            0::int2, 
+            macaddr'00:00:00:00:00:00')$sql$,
+        '22008',
+        'timestamp value out of range for UUID v1',
+        'UUID v1 from PostgreSQL timestamptz overflows correctly'
+    );
 
 /* create_from_int8 tests */
 

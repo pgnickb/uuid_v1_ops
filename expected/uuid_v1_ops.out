@@ -1,6 +1,6 @@
 \unset ECHO
 
-1..42
+1..43
 ok 1 - uuid_v1_cmp handles nulls properly
 ok 2 - Less then works fine
 ok 3 - Greater then works fine
@@ -34,12 +34,13 @@ ok 30 - Variant 3
 ok 31 - get_variant handles nulls properly
 ok 32 - create_from_ts handles nulls properly
 ok 33 - Timestamptz UUID generation is consistent
-ok 34 - int8 UUIDs generation is consistent
+ok 34 - UUID v1 from PostgreSQL timestamptz overflows correctly
 ok 35 - int8 UUIDs generation is consistent
-ok 36 - create_from_int8 handles nulls properly
-ok 37 - Planner recognizes uuid_v1_ops index as usable for the ~< operator
-ok 38 - Planner recognizes uuid_v1_ops index as usable for the ~> operator
-ok 39 - Planner recognizes uuid_v1_ops index as usable for the ~<= operator
-ok 40 - Planner recognizes uuid_v1_ops index as usable for the ~>= operator
-ok 41 - Planner recognizes uuid_v1_ops index as usable for the = operator
-ok 42 - UUID v1 are correctly reversed into components
+ok 36 - int8 UUIDs generation is consistent
+ok 37 - create_from_int8 handles nulls properly
+ok 38 - Planner recognizes uuid_v1_ops index as usable for the ~< operator
+ok 39 - Planner recognizes uuid_v1_ops index as usable for the ~> operator
+ok 40 - Planner recognizes uuid_v1_ops index as usable for the ~<= operator
+ok 41 - Planner recognizes uuid_v1_ops index as usable for the ~>= operator
+ok 42 - Planner recognizes uuid_v1_ops index as usable for the = operator
+ok 43 - UUID v1 are correctly reversed into components
