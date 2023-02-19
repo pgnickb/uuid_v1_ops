@@ -9,7 +9,7 @@ create extension uuid_v1_ops;
 /* seed random for consistent dataset */
 select setseed(0.2);
 
-select plan(43);
+select plan(44);
 /* tests: */
 
 /* comparison */
@@ -158,7 +158,14 @@ select throws_ok(
             macaddr'00:00:00:00:00:00')$sql$,
         '22008',
         'timestamp value out of range for UUID v1',
-        'UUID v1 from PostgreSQL timestamptz overflows correctly'
+        'UUID v1 from PostgreSQL timestamptz overflows as expected'
+    );
+
+select throws_ok(
+        $sql$ select uuid_v1_create_from_int8(-1, 0::int2, '00:00:00:00:00:00'::macaddr);$sql$,
+        '22008',
+        'timestamp value out of range for UUID v1',
+        'UUID v1 from PostgreSQL int8 overflows as expected'
     );
 
 /* create_from_int8 tests */

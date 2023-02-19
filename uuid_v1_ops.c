@@ -189,6 +189,14 @@ uuid_v1_create_from_int8(PG_FUNCTION_ARGS)
 	int16		clock_seq = PG_GETARG_INT16(1);
 	macaddr    *node = PG_GETARG_MACADDR_P(2);
 
+	if (unlikely((ts & UUID_V1_GREATEST_SUPPORTED_INT8) != 0))
+	{
+		ereport(ERROR,
+				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+				 errmsg("timestamp value out of range for UUID v1")));
+	}
+
+
 	PG_RETURN_UUID_P(uuid_v1_create_from_internal(ts, clock_seq, node));
 }
 
