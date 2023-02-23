@@ -47,5 +47,5 @@ jobs:
         run: cat regression.diffs
 
       - name: Show regression diffs
-        if: always
+        if: always()
         run: diff expected/coverage results.coverage
