@@ -50,11 +50,6 @@ create or replace function uuid_v1_le(uuid,uuid)
     language C immutable
     parallel safe strict leakproof
     as 'uuid_v1_ops', 'uuid_v1_le';
-create or replace function uuid_v1_eq(uuid,uuid)
-    returns boolean
-    language C immutable
-    parallel safe strict leakproof
-    as 'uuid_v1_ops', 'uuid_v1_eq';
 create or replace function uuid_v1_ge(uuid,uuid)
     returns boolean
     language C immutable
