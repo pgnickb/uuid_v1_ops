@@ -48,4 +48,4 @@ jobs:
 
       - name: Show regression diffs
         if: always()
-        run: diff expected/coverage results.coverage
+        run: diff expected/coverage results/coverage
