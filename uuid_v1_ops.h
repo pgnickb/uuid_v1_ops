@@ -68,9 +68,10 @@ Datum		uuid_v1_create_from_ts(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(uuid_v1_create_from_int8);
 Datum		uuid_v1_create_from_int8(PG_FUNCTION_ARGS);
 
-pg_uuid_t       *uuid_v1_create_from_internal(int64 ts, int16 clock_seq, macaddr *node);
-static int64    uuid_v1_get_timestamp_internal(pg_uuid_t *uuid);
-static int      uuid_v1_internal_cmp(const pg_uuid_t *arg1, const pg_uuid_t *arg2);
+pg_uuid_t  *uuid_v1_create_from_internal(int64 ts, int16 clock_seq, macaddr *node);
+static int64 uuid_v1_get_timestamp_internal(pg_uuid_t *uuid);
+static int	uuid_v1_internal_cmp(const pg_uuid_t *arg1, const pg_uuid_t *arg2);
+
 
 static unsigned int order[UUID_LEN] = {6, 7, 4, 5, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15};
 
