@@ -10,7 +10,7 @@ is_uuid_v1(PG_FUNCTION_ARGS)
 		);
 }
 
-int64
+static int64
 uuid_v1_get_timestamp_internal(pg_uuid_t *uuid)
 {
 	uint64		res;			/* number of 100ns intervals since EPOCH */
@@ -86,15 +86,6 @@ uuid_v1_le(PG_FUNCTION_ARGS)
 	pg_uuid_t  *arg2 = PG_GETARG_UUID_P(1);
 
 	PG_RETURN_BOOL(uuid_v1_internal_cmp(arg1, arg2) <= 0);
-}
-
-Datum
-uuid_v1_eq(PG_FUNCTION_ARGS)
-{
-	pg_uuid_t  *arg1 = PG_GETARG_UUID_P(0);
-	pg_uuid_t  *arg2 = PG_GETARG_UUID_P(1);
-
-	PG_RETURN_BOOL(uuid_v1_internal_cmp(arg1, arg2) == 0);
 }
 
 Datum

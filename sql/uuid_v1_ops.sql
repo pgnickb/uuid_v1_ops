@@ -9,10 +9,18 @@ create extension uuid_v1_ops;
 /* seed random for consistent dataset */
 select setseed(0.2);
 
-select plan(44);
+select plan(48);
 /* tests: */
 
-/* comparison */
+/* comparison operators */
+
+/* we don't need to test the = operator, as we use the built-in one */
+select is(uuid'00000000-0000-0100-0000-000000000000' ~> uuid'10000000-0000-0000-0000-000000000000', true, '> comparison works');
+select is(uuid'00000000-1000-0000-0000-000000000000' ~< uuid'00000000-0000-0200-0000-000000000000', true, '< comparison works');
+select is(uuid'00000000-0000-0a00-0000-000000000000' ~>= uuid'00000000-0000-0000-0a00-000000000000', true, '>= comparison works');
+select is(uuid'00000000-0000-0b00-0000-000000000000' ~<= uuid'00000000-0000-0b00-0000-000000000000', true, '<= comparison works');
+
+/* cmp comparison */
 
 select is(
             uuid_v1_cmp(uuid'00000000-0000-0000-0000-000000000000',
