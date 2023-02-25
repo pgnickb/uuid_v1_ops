@@ -37,7 +37,7 @@ jobs:
           sudo -u postgres createuser -s "$USER"
 
       - name: Build and Test
-        run: make CFLAGS_SL="$(pg_config --cflags_sl) -coverage -fno-inline -fno-inline-small-functions -fno-default-inline" && sudo -E make install && time make installcheck
+        run: make CFLAGS_SL="$(pg_config --cflags_sl) --coverage -fno-inline -fno-inline-small-functions -fno-default-inline" && sudo -E make install && time make installcheck
       
       - name: Generate coverage results
         run: gcov uuid_v1_ops.c > results/coverage
@@ -46,6 +46,6 @@ jobs:
         if: failure()
         run: cat regression.diffs
 
-      - name: Show regression diffs
+      - name: Show coverage diffs
         if: always()
         run: diff expected/coverage results/coverage
