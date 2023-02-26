@@ -1,6 +1,6 @@
 # Disclaimer
 
-The extension is still under development. You are welcome to test it and submit feedback either via issues or via #postgresql on Libera.chat @nickb.
+The extension is still under development. You are welcome to test it and submit feedback either via issues or via #postgresql on Libera.chat @nickb. Current state of the extension is the version 0.1.0. Any further changes to the extension will have a corresponding version bump and will come with upgrade script. This means that as of now the extension is safe to install into a database with real data.
 # UUID v1 Opclass
 
 This extension provides the `uuid_v1_ops` opclass for indexes over UUID type. This enables a custom sorting order based on the timestamp encoded within the [UUID v1](https://www.ietf.org/rfc/rfc4122.txt).
